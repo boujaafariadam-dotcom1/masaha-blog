@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مساحة | المقال</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f5;
+            color: #222;
+            line-height: 2;
+            margin: 0;
+            padding: 30px 20px;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+        }
+
+        a {
+            color: #777;
+            text-decoration: none;
+        }
+
+        h1 {
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <a href="index.html">← العودة إلى الصفحة الرئيسية</a>
+        <article id="post-content">
+            جارٍ تحميل المقال...
+        </article>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const file = params.get("file");
+
+        const url = `https://raw.githubusercontent.com/Boujaafariadam-dotcom1/masaha-blog/main/content/posts/${encodeURIComponent(file || "")}`;
+
+        async function loadPost() {
+            const container = document.getElementById("post-content");
+
+            if (!file || !file.endsWith(".md")) {
+                container.textContent = "رابط المقال غير صحيح.";
+                return;
+            }
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error("تعذر تحميل المقال");
+                }
+
+                const markdown = await response.text();
+                container.innerHTML = marked.parse(markdown);
+
+            } catch (error) {
+                container.textContent = "حدث خطأ أثناء تحميل المقال.";
+                console.error(error);
+            }
+        }
+
+        loadPost();
+    </script>
+
+</body>
+</html>
